@@ -84,7 +84,6 @@ tbody tr:hover * {
 
 @media all and (min-width: 600px) {
     table { max-width: 600px; margin: auto }
-
 }
 
 </style>
@@ -132,6 +131,7 @@ $.getJSON( <?php echo json_encode(DATA_URL) ?>, { }, function(data) {
     }
 
     for( var i = 0; i < data.length; i++ ) {
+        if( i >= <?php echo $show ?> ) break;
         $("#data").append(
             "<tr class='" + (i%2 ? "even" : "odd")+ "'>" +
             t("<img src='" + data[i].flag_url + "' />", "flag") +
