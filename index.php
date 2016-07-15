@@ -1,6 +1,12 @@
 <?php
 require( "config.php" );
 
+// simple limiter ?show=5
+$show = 10;
+if( isset( $_GET['show']) ) $show = intval( $_GET['show'] );
+if( $show < 1 ) $show = 1;
+if( $show > 10 ) $show = 10;
+
 if( defined( "SERVER_FETCH") ) {
     $url = str_replace("callback=?", "callback=raw_json", DATA_URL);
     $data = file_get_contents($url);
@@ -98,6 +104,7 @@ tbody tr:hover * {
     <tbody id="data">
 <?php if( defined( "SERVER_FETCH" ) ) { ?>
 <?php foreach( $data as $k => $row ) { ?>
+<?php if( $k >= $show ) break; ?>
         <tr class="<?php echo ($k % 2) ? "even" : "odd"; ?>">
             <td class="flag"><img src="<?php echo $row->flag_url ?>" /></td>
             <td class="country_symbol"><?php echo $row->country_symbol ?></td>
