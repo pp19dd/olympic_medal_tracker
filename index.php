@@ -69,11 +69,16 @@ tbody tr:hover {
 }
 
 tbody tr:hover * {
-    
+
 }
 
 @media all and (max-height: 450px) {
     img { transform: scale(0.75) }
+}
+
+@media all and (min-width: 600px) {
+    table { max-width: 600px; margin: auto }
+
 }
 
 </style>
