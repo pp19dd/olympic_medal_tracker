@@ -1,7 +1,7 @@
 <?php
 // scores obtained from a gdoc-data output
 define( "DATA_URL", "http://example.com/?project=example&callback=?" );
-
+define( "HOME_URL", "http://example.com/medals/" );
 
 // default mode of operation is fetch via JSONP
 // uncomment to make server fetch, if the page is

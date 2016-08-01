@@ -95,9 +95,9 @@ tbody tr:hover * {
         <tr>
             <td class="flag"></td>
             <td class="country_symbol"></td>
-            <td class="count"><img src="<?php image("gold.png"); ?>" /></td>
-            <td class="count"><img src="<?php image("silver.png") ?>" /></td>
-            <td class="count"><img src="<?php image("bronze.png") ?>" /></td>
+            <td class="count"><img src="<?php image(HOME_URL . "gold.png"); ?>" /></td>
+            <td class="count"><img src="<?php image(HOME_URL . "silver.png") ?>" /></td>
+            <td class="count"><img src="<?php image(HOME_URL . "bronze.png") ?>" /></td>
         </tr>
     </thead>
     <tbody id="data">
