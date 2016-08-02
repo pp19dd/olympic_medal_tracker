@@ -1,11 +1,34 @@
 <?php
 require( "config.php" );
 
-// simple limiter ?show=5
+function localize($num) {
+    global $numbers;
+
+    if( $numbers === "english" ) return( $num );
+
+    $t = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+
+    $r = "";
+    for( $i = 0; $i < strlen($num); $i++ ) {
+        $c = $num[$i];
+        $r .= $t[$c];
+    }
+    return( $r );
+}
+
+// parameter #1: simple limiter ex: "?show=5"
 $show = 10;
 if( isset( $_GET['show']) ) $show = intval( $_GET['show'] );
 if( $show < 1 ) $show = 1;
 if( $show > 10 ) $show = 10;
+
+// parameter #2: direction ex: "?dir=rtl"
+$dir = "ltr";
+if( isset( $_GET['dir']) && $_GET['dir'] == "rtl" ) $dir = "rtl";
+
+// parameter #3: numbers in farsi
+$numbers = "english";
+if( isset( $_GET['numbers']) && $_GET['numbers'] == "farsi" ) $numbers = "farsi";
 
 if( defined( "SERVER_FETCH") ) {
     $url = str_replace("callback=?", "callback=raw_json", DATA_URL);
@@ -48,35 +71,55 @@ table {
     height:100%;
 }
 
-td.country_symbol {
-    font-size: 0.75em;
-}
-thead td.count { text-align: right; width: 15% }
+thead td.count { text-align: right;}
 tbody td.count {
     text-align: right;
-    padding-right: 1em;
-    font-weight: bold;
-    font-size: 1.25em;
 }
-td.flag { text-align: center }
-img { width: 100%; max-width: 48px; }
+td.flag { text-align: center;  }
 
 tr.odd {
     background-color: #DDDDDD
 }
 
+/* col widths */
+table { width: 80%; margin: auto }
+th { text-align: right }
+td.count { width:15%; }
+img { width: 100%; max-width: 48px; }
+td.country_symbol { text-align: right }
+.count_gold { font-weight: bold; }
+.count_silver { color: #555; }
+.count_bronze { color: #555; }
+
 /* mousey */
 
 tbody tr { transition: background-color 0.5s ease; }
-tbody tr img {  }
-
+tbody tr img { }
 tbody tr:hover {
+    opacity: 0.8;
     background-color: #FFDC00;
+    box-shadow:0px 0px 3px #ffdc00;
+    -webkit-box-shadow:0px 0px 3px #ffdc00;
 }
-
-tbody tr:hover * {
-
+.high {
+    background-color: rgba(0,0,0,0.1);
 }
+tbody tr:hover * { }
+
+/* alignment fix */
+@media all and (max-width: 260px) { td.count { padding-right:6px; } }
+@media all and (max-width: 400px) { td.count { padding-right:12px; } }
+@media all and (max-width: 600px) { td.count { padding-right:15px; } }
+@media all and (min-width: 600px) { td.count { padding-right:18px; } }
+
+@media all and (min-width: 260px) { td.count { font-size:1.0em } }
+@media all and (min-width: 400px) { td.count { font-size:1.33em } }
+@media all and (min-width: 600px) { td.count { font-size:1.5em } }
+
+td.country_symbol { font-size: 0.75em; }
+@media all and (min-width: 350px) { td.country_symbol { font-size: 0.85em; } }
+@media all and (min-width: 600px) { td.country_symbol { font-size: 0.95em; } }
+@media all and (min-width: 700px) { td.country_symbol { font-size: 1em; } }
 
 @media all and (max-height: 450px) {
     img { transform: scale(0.75) }
@@ -90,14 +133,14 @@ tbody tr:hover * {
 </head>
 <body>
 
-<table border="0">
+<table border="0" dir="<?php echo $dir ?>">
     <thead>
         <tr>
-            <td class="flag"></td>
-            <td class="country_symbol"></td>
-            <td class="count"><img src="<?php image(HOME_URL . "gold.png"); ?>" /></td>
-            <td class="count"><img src="<?php image(HOME_URL . "silver.png") ?>" /></td>
-            <td class="count"><img src="<?php image(HOME_URL . "bronze.png") ?>" /></td>
+            <th class="country_symbol"></th>
+            <th class="flag"></th>
+            <th id="gold" class="count count_gold"><img src="<?php image(HOME_URL . "gold.png"); ?>" /></th>
+            <th id="silver" class="count count_silver"><img src="<?php image(HOME_URL . "silver.png") ?>" /></th>
+            <th id="bronze" class="count count_bronze"><img src="<?php image(HOME_URL . "bronze.png") ?>" /></th>
         </tr>
     </thead>
     <tbody id="data">
@@ -105,11 +148,11 @@ tbody tr:hover * {
 <?php foreach( $data as $k => $row ) { ?>
 <?php if( $k >= $show ) break; ?>
         <tr class="<?php echo ($k % 2) ? "even" : "odd"; ?>">
-            <td class="flag"><img src="<?php echo $row->flag_url ?>" /></td>
             <td class="country_symbol"><?php echo $row->country_symbol ?></td>
-            <td class="count"><?php echo $row->gold ?></td>
-            <td class="count"><?php echo $row->silver ?></td>
-            <td class="count"><?php echo $row->bronze ?></td>
+            <td class="flag"><img src="<?php echo $row->flag_url ?>" /></td>
+            <td class="count count_gold"><?php echo localize($row->gold) ?></td>
+            <td class="count count_silver"><?php echo localize($row->silver) ?></td>
+            <td class="count count_bronze"><?php echo localize($row->bronze) ?></td>
         </tr>
 <?php } ?>
 <?php } ?>
@@ -134,11 +177,11 @@ $.getJSON( <?php echo json_encode(DATA_URL) ?>, { }, function(data) {
         if( i >= <?php echo $show ?> ) break;
         $("#data").append(
             "<tr class='" + (i%2 ? "even" : "odd")+ "'>" +
-            t("<img src='" + data[i].flag_url + "' />", "flag") +
             t(data[i].country_symbol, "country_symbol") +
-            t(data[i].gold, "count") +
-            t(data[i].silver, "count") +
-            t(data[i].bronze, "count") +
+            t("<img src='" + data[i].flag_url + "' />", "flag") +
+            t(data[i].gold, "count count_gold") +
+            t(data[i].silver, "count count_silver") +
+            t(data[i].bronze, "count count_bronze") +
             "</tr>"
         );
     }
@@ -147,5 +190,36 @@ $.getJSON( <?php echo json_encode(DATA_URL) ?>, { }, function(data) {
 
 <?php } ?>
 
+<script>
+(function() {
+    function highlight(selector, show) {
+        var e = document.getElementsByClassName("count_" + selector);
+        for( var i = 0; i < e.length; i++ ) {
+            if( show === true ) {
+                e[i].classList.add("high");
+            } else {
+                e[i].classList.remove("high");
+            }
+        }
+    }
+
+    var e = ["gold", "silver", "bronze"];
+    for( var i = 0; i < e.length; i++ )(function(selector) {
+
+        document.getElementById(selector).onmouseover = function() {
+            highlight(selector, true);
+        }
+
+        document.getElementById(selector).onmouseout = function() {
+            highlight(selector, false);
+        }
+
+        document.getElementById(selector).onclick = function() {
+            highlight(selector, true);
+        }
+
+    })(e[i]);
+})();
+</script>
 </body>
 </html>
