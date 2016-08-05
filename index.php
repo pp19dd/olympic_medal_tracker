@@ -1,5 +1,6 @@
 <?php
 require( "config.php" );
+require( "flags.php" );
 
 function localize($num) {
     global $numbers;
@@ -54,6 +55,7 @@ function image($filename) {
 <head>
     <title>Olympic Medal Tracker</title>
     <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
 <?php if( !defined( "SERVER_FETCH" ) ) { ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <?php } ?>
@@ -129,6 +131,13 @@ td.country_symbol { font-size: 0.75em; }
     table { max-width: 600px; margin: auto }
 }
 
+<?php if( $numbers != "english" ) { ?>
+
+td.count {
+    font-size: 1.25em;
+}
+
+<?php } ?>
 </style>
 </head>
 <body>
@@ -138,9 +147,9 @@ td.country_symbol { font-size: 0.75em; }
         <tr>
             <th class="country_symbol"></th>
             <th class="flag"></th>
-            <th id="gold" class="count count_gold"><img src="<?php image(HOME_URL . "gold.png"); ?>" /></th>
-            <th id="silver" class="count count_silver"><img src="<?php image(HOME_URL . "silver.png") ?>" /></th>
-            <th id="bronze" class="count count_bronze"><img src="<?php image(HOME_URL . "bronze.png") ?>" /></th>
+            <th id="gold" class="count count_gold"><img src="http://www.voanews.com/MediaAssets2/projects/olympics-2016/gold.png" /></th>
+            <th id="silver" class="count count_silver"><img src="http://www.voanews.com/MediaAssets2/projects/olympics-2016/silver.png" /></th>
+            <th id="bronze" class="count count_bronze"><img src="http://www.voanews.com/MediaAssets2/projects/olympics-2016/bronze.png" /></th>
         </tr>
     </thead>
     <tbody id="data">
@@ -149,7 +158,7 @@ td.country_symbol { font-size: 0.75em; }
 <?php if( $k >= $show ) break; ?>
         <tr class="<?php echo ($k % 2) ? "even" : "odd"; ?>">
             <td class="country_symbol"><?php echo $row->country_symbol ?></td>
-            <td class="flag"><img src="<?php echo $row->flag_url ?>" /></td>
+            <td class="flag"><img src="http://www.voanews.com/MediaAssets2/projects/olympics-2016/flags/<?php echo $flags[$row->country_symbol] ?>" /></td>
             <td class="count count_gold"><?php echo localize($row->gold) ?></td>
             <td class="count count_silver"><?php echo localize($row->silver) ?></td>
             <td class="count count_bronze"><?php echo localize($row->bronze) ?></td>
