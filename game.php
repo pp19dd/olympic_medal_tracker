@@ -256,6 +256,11 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 
 .pane p { padding:0.5em }
 #next { display: none }
+
+#score span { padding-left: 1em }
+#score-level { }
+#score-correct { color: limegreen }
+#score-wrong { color: crimson }
 </style>
 
 <div class="quiz">
@@ -263,7 +268,14 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 
 <p>How many olympic flags can you identify?</p>
 
-<h1><span id="score"></span> <span id="next"><a href="#">Next level!</a></span></h1>
+<h1>
+    <span id="score">
+        Level: <span id="score-level"></span>
+        Correct: <span id="score-correct"></span>
+        Wrong: <span id="score-wrong"></span>
+    </span>
+    <span id="next"><a href="#">Next level!</a></span>
+</h1>
 
 <div class="clr"></div>
 
@@ -309,11 +321,9 @@ var score = {
 var data = <?php echo json_encode($data) ?>;
 
 function update_scores() {
-    $("#score").html(
-        "Level: " + score.level + ", " +
-        "Correct: " + score.correct + ", " +
-        "Wrong: " + score.wrong
-    );
+    $("#score-level").html( score.level );
+    $("#score-correct").html( score.correct );
+    $("#score-wrong").html( score.wrong );
 }
 
 function evaluate_next() {
