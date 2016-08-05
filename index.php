@@ -18,10 +18,10 @@ function localize($num) {
 }
 
 // parameter #1: simple limiter ex: "?show=5"
-$show = 10;
+$show = 100;
 if( isset( $_GET['show']) ) $show = intval( $_GET['show'] );
 if( $show < 1 ) $show = 1;
-if( $show > 10 ) $show = 10;
+if( $show > 100 ) $show = 100;
 
 // parameter #2: direction ex: "?dir=rtl"
 $dir = "ltr";
@@ -33,6 +33,7 @@ if( isset( $_GET['numbers']) && $_GET['numbers'] == "farsi" ) $numbers = "farsi"
 
 if( defined( "SERVER_FETCH") ) {
     $url = str_replace("callback=?", "callback=raw_json", DATA_URL);
+    $url .= "&ts=" . time();
     $data = file_get_contents($url);
     $data = json_decode($data);
 }
@@ -154,17 +155,24 @@ td.count {
     </thead>
     <tbody id="data">
 <?php if( defined( "SERVER_FETCH" ) ) { ?>
-<?php foreach( $data as $k => $row ) { ?>
-<?php if( $k >= $show ) break; ?>
+<?php
+foreach( $data as $k => $row ) {
+    $code = strtoupper(trim($row->country_symbol));
+    if( $k >= $show ) break;
+?>
         <tr class="<?php echo ($k % 2) ? "even" : "odd"; ?>">
-            <td class="country_symbol"><?php echo $row->country_symbol ?></td>
-            <td class="flag"><img src="http://www.voanews.com/MediaAssets2/projects/olympics-2016/flags/<?php echo $flags[$row->country_symbol] ?>" /></td>
-            <td class="count count_gold"><?php echo localize($row->gold) ?></td>
-            <td class="count count_silver"><?php echo localize($row->silver) ?></td>
-            <td class="count count_bronze"><?php echo localize($row->bronze) ?></td>
+            <td class="country_symbol"><?php echo $code ?></td>
+<?php if( isset($flags[$code]) ) { ?>
+            <td class="flag"><img src="http://www.voanews.com/MediaAssets2/projects/olympics-2016/flags/<?php echo $flags[$code] ?>" /></td>
+<?php } else { ?>
+            <td class="flag"></td>
+<?php } ?>
+            <td class="count count_gold"><?php echo localize(intval($row->gold)) ?></td>
+            <td class="count count_silver"><?php echo localize(intval($row->silver)) ?></td>
+            <td class="count count_bronze"><?php echo localize(intval($row->bronze)) ?></td>
         </tr>
 <?php } ?>
-<?php } ?>
+<?php } # server fetch mode ?>
     </tbody>
 </table>
 
