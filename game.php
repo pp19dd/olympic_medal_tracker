@@ -234,49 +234,81 @@ $h = 29 * 1.333;
 
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<meta charset="utf-8" />
 
 <style>
-.quiz { font-family: Arial; font-size: 14px }
-img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
-.clr { clear: both; }
-.pane { width: 24%; border-right:2px solid gray; float: left }
-.pane-inner { padding: 1em }
-.pane-last { border-right:0px }
+.oq-quiz {
+    font-family: Arial; font-size: 14px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.oq-quiz * {
+    outline: none;
+}
+img.oq { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
+.oq-clr { clear: both; }
+.oq-pane { width: 24%; border-right:1px dotted silver; float: left }
+.oq-pane-inner { padding: 1em }
+.oq-pane-last { border-right:0px }
 
-.pane p { cursor: pointer }
-.level { }
+.oq-pane p { cursor: pointer }
+.oq-level { }
 .oq-answer {  }
+
+.oq-correct, .oq-wrong, .oq-finished {
+    -webkit-transition: background-color 1000ms linear;
+    -moz-transition: background-color 1000ms linear;
+    -o-transition: background-color 1000ms linear;
+    -ms-transition: background-color 1000ms linear;
+    transition: background-color 1000ms linear;
+}
 
 .oq-correct { background-color: #3D9970; color:white; font-weight: bold }
 .oq-wrong { background-color: crimson; color: white; font-weight: bold }
 
-.oq-finished { opacity: 0.5; background-color: rgba(0,0,0,0.5) }
-.pane .oq-finished p { cursor: default !important }
+.oq-finished { opacity: 0.5; background-color: rgba(0,0,0,0.8) }
+.oq-pane .oq-finished p { cursor: default !important }
 
-.pane p { padding:0.5em }
-#next { display: none }
+.oq-pane p { padding:0.25em }
 
-#score span { padding-right: 1em }
+#score span { padding-right: 0.5em }
 #score-level { }
 #score-correct { color: limegreen }
 #score-wrong { color: crimson }
 
+.oq-next-centered {
+    position: absolute;
+    background-color: rgba(0,0,0,0.7);
+    width:90%;
+    padding:1em;
+    z-index:99;
+    text-align: center;
+}
+
+.oq-next-centered a {
+    display: block;
+    font-size:2em;
+    color: #FFDC00 !important;
+}
+
+.oq-next a { color: #FFDC00 !important }
+.oq-blink a, a.oq-blink { color: #85144b !important }
+
 @media all and (max-width: 500px) {
-    .pane { width: 49% }
+    .oq-pane { width: 49% }
 
-    .panebreak { clear: both }
+    .oq-panebreak { clear: both }
 
-    .panebreakright { border-right: 0px }
-    .panetop { border-bottom:2px solid gray }
+    .oq-panebreakright { border-right: 0px }
+    .oq-panetop { border-bottom:1px dotted silver }
 }
 
 </style>
 
-<div class="quiz">
-<h1>Olympic Flags Quiz</h1>
-
-<p>How many olympic flags can you identify?</p>
+<div class="oq-quiz">
 
 <h3>
     <span id="score">
@@ -284,40 +316,44 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
         Correct: <span id="score-correct"></span>
         Wrong: <span id="score-wrong"></span>
     </span>
-    <span id="next"><a href="#">Next level!</a></span>
 </h3>
 
-<div class="clr"></div>
+<div class="oq-clr"></div>
 
-<div class="panes">
+<div class="oq-panes">
 
-    <div class="pane panetop">
-        <div class="pane-inner">
-
-        </div>
-    </div>
-
-    <div class="pane panebreakright panetop">
-        <div class="pane-inner">
+    <div class="oq-pane oq-panetop">
+        <div class="oq-pane-inner">
 
         </div>
     </div>
 
-    <div class="pane panebreak">
-        <div class="pane-inner">
+    <div class="oq-pane oq-panebreakright oq-panetop">
+        <div class="oq-pane-inner">
 
         </div>
     </div>
 
-    <div class="pane pane-last">
-        <div class="pane-inner">
+    <div class="oq-next-centered"><a href="#">Next level!</a></div>
+
+    <div class="oq-pane oq-panebreak">
+        <div class="oq-pane-inner">
 
         </div>
     </div>
 
+    <div class="oq-pane oq-pane-last">
+        <div class="oq-pane-inner">
+
+        </div>
+    </div>
+
+    <div class="oq-clr"></div>
 </div>
 
-<div class="clr"></div>
+<div class="oq-clr"></div>
+
+<div style="height:8em">&nbsp;</div>
 
 </div>
 
@@ -339,16 +375,21 @@ function update_scores() {
 function evaluate_next() {
     var panes = $(".oq-finished");
     if( panes.length == 4 ) {
-        $("#next").show();
+        var h = $(".oq-panes").height();
+        $(".oq-next").css({ opacity: 1 });
+        $(".oq-next-centered").show();
+        $(".oq-next-centered").css({ height: h + "px"});
+        $(".oq-next-centered a").css({ "padding-top": (h*0.4799) + "px"});
     } else {
-        $("#next").hide();
+        $(".oq-next-centered").hide();
+        $(".oq-next").css({ opacity: 0 });
     }
 }
 
 function quiz(container) {
     var i = parseInt(Math.random() * data.length);
     container.html("");
-    container.append("<div><img src='http://www.voanews.com/MediaAssets2/projects/olympics-2016/flags/" + data[i].flag + "' /></div>");
+    container.append("<div><img class='oq' src='http://www.voanews.com/MediaAssets2/projects/olympics-2016/flags/" + data[i].flag + "' /></div>");
 
     var guesses = [];
 
@@ -395,20 +436,35 @@ function shuffle(node) {
     }
 }
 
-function new_quiz() {
-    $(".pane-inner").each(function() {
-        $(this).removeClass("oq-finished");
-        $("#next").hide();
-        quiz($(this));
+function size_equalize(container) {
+    var max = 0;
+    $(".oq-pane-inner").each(function(k) {
+        var h = $(this).height();
+        if( h > max ) max = h;
     });
+    $(".oq-pane-inner").css({ height: max + "px" });
 }
 
-$("#next").click(function(e) {
+function new_quiz() {
+    $(".oq-pane-inner").each(function() {
+        $(this).removeClass("oq-finished");
+        $(".oq-next").css({ opacity: 0 });
+        $(".oq-next-centered").hide();
+        quiz($(this));
+    });
+    //size_equalize();
+}
+
+$(".oq-next, .oq-next-centered a").click(function(e) {
     score.level++;
     update_scores();
     new_quiz();
     return(false);
 })
+
+setInterval( function() {
+    $(".oq-next, .oq-next-centered a").toggleClass("oq-blink");
+}, 1000 );
 
 update_scores();
 new_quiz();
