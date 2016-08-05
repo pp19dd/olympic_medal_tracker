@@ -378,6 +378,7 @@ function shuffle(node) {
 function new_quiz() {
     $(".pane-inner").each(function() {
         $(this).removeClass("finished");
+        $("#next").hide();
         quiz($(this));
     });
 }
