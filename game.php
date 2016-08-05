@@ -246,13 +246,13 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 
 .pane p { cursor: pointer }
 .level { }
-.answer {  }
+.oq-answer {  }
 
-.correct { background-color: limegreen; color:white }
-.wrong { background-color: crimson; color: white }
+.oq-correct { background-color: #3D9970; color:white; font-weight: bold }
+.oq-wrong { background-color: crimson; color: white; font-weight: bold }
 
-.finished { opacity: 0.5; background-color: rgba(0,0,0,0.5) }
-.pane .finished p { cursor: default !important }
+.oq-finished { opacity: 0.5; background-color: rgba(0,0,0,0.5) }
+.pane .oq-finished p { cursor: default !important }
 
 .pane p { padding:0.5em }
 #next { display: none }
@@ -337,7 +337,7 @@ function update_scores() {
 }
 
 function evaluate_next() {
-    var panes = $(".finished");
+    var panes = $(".oq-finished");
     if( panes.length == 4 ) {
         $("#next").show();
     } else {
@@ -357,23 +357,23 @@ function quiz(container) {
         var t = parseInt(Math.random() * data.length);
         guesses. push( data[t] );
 
-        container.append("<p class='guess'>" + data[t].name + "</p>");
+        container.append("<p class='oq-guess'>" + data[t].name + "</p>");
     }
 
-    container.append("<p class='answer'>" + data[i].name + "</p>");
+    container.append("<p class='oq-answer'>" + data[i].name + "</p>");
 
     shuffle(container);
 
     $("p", container).click( function() {
-        if( $(this).hasClass("answer") ) {
-            $(this).addClass("correct");
-            $(container).addClass("finished");
+        if( $(this).hasClass("oq-answer") ) {
+            $(this).addClass("oq-correct");
+            $(container).addClass("oq-finished");
             $("p", container).off("click");
 
             score.correct++;
             update_scores();
         } else {
-            $(this).addClass("wrong");
+            $(this).addClass("oq-wrong");
             $(this).off("click");
 
             score.wrong++;
@@ -397,7 +397,7 @@ function shuffle(node) {
 
 function new_quiz() {
     $(".pane-inner").each(function() {
-        $(this).removeClass("finished");
+        $(this).removeClass("oq-finished");
         $("#next").hide();
         quiz($(this));
     });
