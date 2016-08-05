@@ -237,6 +237,7 @@ $h = 29 * 1.333;
 <meta charset="utf-8" />
 
 <style>
+.quiz { font-family: Arial; font-size: 14px }
 img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 .clr { clear: both; }
 .pane { width: 24%; border-right:2px solid gray; float: left }
@@ -254,9 +255,10 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 .pane .finished p { cursor: default !important }
 
 .pane p { padding:0.5em }
-x#next { display: none }
+#next { display: none }
 </style>
 
+<div class="quiz">
 <h1>Olympic Flags Quiz</h1>
 
 <p>How many olympic flags can you identify?</p>
@@ -294,6 +296,8 @@ x#next { display: none }
 </div>
 
 <div class="clr"></div>
+
+</div>
 
 <script>
 var score = {
