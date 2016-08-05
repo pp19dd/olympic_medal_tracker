@@ -257,10 +257,20 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 .pane p { padding:0.5em }
 #next { display: none }
 
-#score span { padding-left: 1em }
+#score span { padding-right: 1em }
 #score-level { }
 #score-correct { color: limegreen }
 #score-wrong { color: crimson }
+
+@media all and (max-width: 500px) {
+    .pane { width: 49% }
+
+    .panebreak { clear: both }
+
+    .panebreakright { border-right: 0px }
+    .panetop { border-bottom:2px solid gray }
+}
+
 </style>
 
 <div class="quiz">
@@ -268,32 +278,32 @@ img { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 
 <p>How many olympic flags can you identify?</p>
 
-<h1>
+<h3>
     <span id="score">
         Level: <span id="score-level"></span>
         Correct: <span id="score-correct"></span>
         Wrong: <span id="score-wrong"></span>
     </span>
     <span id="next"><a href="#">Next level!</a></span>
-</h1>
+</h3>
 
 <div class="clr"></div>
 
 <div class="panes">
 
-    <div class="pane">
+    <div class="pane panetop">
         <div class="pane-inner">
 
         </div>
     </div>
 
-    <div class="pane">
+    <div class="pane panebreakright panetop">
         <div class="pane-inner">
 
         </div>
     </div>
 
-    <div class="pane">
+    <div class="pane panebreak">
         <div class="pane-inner">
 
         </div>
