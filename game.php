@@ -291,6 +291,7 @@ img.oq { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
     display: block;
     font-size:2em;
     color: #FFDC00 !important;
+    text-align: center;
 }
 
 .oq-next a { color: #FFDC00 !important }
