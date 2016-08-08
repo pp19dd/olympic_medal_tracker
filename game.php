@@ -215,7 +215,7 @@ EOF;
 
 
 $countries = explode("\n", trim($countries) );
-
+// $countries = array_slice($countries, 0, 30); // for debugging
 $data = array();
 foreach( $countries as $k => $v ) {
     $t1 = explode("[", $v);
@@ -256,7 +256,7 @@ img.oq { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 
 .oq-pane p { cursor: pointer }
 .oq-level { }
-.oq-answer {  }
+.oq-answer { }
 
 .oq-correct, .oq-wrong, .oq-finished {
     -webkit-transition: background-color 1000ms linear;
@@ -274,7 +274,7 @@ img.oq { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 
 .oq-pane p { padding:0.25em }
 
-#score span { padding-right: 0.5em }
+#score span { padding-right: 0.25em }
 #score-level { }
 #score-correct { color: limegreen }
 #score-wrong { color: crimson }
@@ -282,10 +282,9 @@ img.oq { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
 .oq-next-centered {
     position: absolute;
     background-color: rgba(0,0,0,0.7);
-    width:90%;
-    padding:1em;
     z-index:99;
     text-align: center;
+    letter-spacing: 2px;
 }
 
 .oq-next-centered a {
@@ -334,7 +333,7 @@ img.oq { width: <?php echo $w ?>px; height: <?php echo $h ?>px; }
         </div>
     </div>
 
-    <div class="oq-next-centered"><a href="#">Next level!</a></div>
+    <div class="oq-next-centered"><a href="#">Next Level!</a></div>
 
     <div class="oq-pane oq-panebreak">
         <div class="oq-pane-inner">
@@ -375,10 +374,11 @@ function update_scores() {
 function evaluate_next() {
     var panes = $(".oq-finished");
     if( panes.length == 4 ) {
+        var w = $(".oq-panes").width();
         var h = $(".oq-panes").height();
         $(".oq-next").css({ opacity: 1 });
         $(".oq-next-centered").show();
-        $(".oq-next-centered").css({ height: h + "px"});
+        $(".oq-next-centered").css({ width: w + "px", height: h + "px"});
         $(".oq-next-centered a").css({ "padding-top": (h*0.4799) + "px"});
     } else {
         $(".oq-next-centered").hide();
@@ -386,18 +386,32 @@ function evaluate_next() {
     }
 }
 
+function four_unique_numbers(that_are_not) {
+    var temp = {};
+    var ret = [];
+
+    while( ret.length < 4) {
+        var t = parseInt(Math.random() * data.length);
+        if( typeof temp[t] == "undefined" && t !== that_are_not) {
+            temp[t] = "ok";
+            ret.push( t );
+        }
+    }
+
+    return( ret );
+}
+
 function quiz(container) {
+    // correct answer
     var i = parseInt(Math.random() * data.length);
+
     container.html("");
     container.append("<div><img class='oq' src='http://www.voanews.com/MediaAssets2/projects/olympics-2016/flags/" + data[i].flag + "' /></div>");
 
-    var guesses = [];
+    var guesses = four_unique_numbers(i);
 
-    for( var j = 0; j < 4; j++ ) {
-
-        var t = parseInt(Math.random() * data.length);
-        guesses. push( data[t] );
-
+    for( var j = 0; j < guesses.length; j++ ) {
+        var t = guesses[j];
         container.append("<p class='oq-guess'>" + data[t].name + "</p>");
     }
 
