@@ -4,14 +4,13 @@ require( "flags.php" );
 
 function localize($num) {
     global $numbers;
-
     if( $numbers === "english" ) return( $num );
 
     $t = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
 
     $r = "";
     for( $i = 0; $i < strlen($num); $i++ ) {
-        $c = $num[$i];
+        $c = substr($num, $i, 1);
         $r .= $t[$c];
     }
     return( $r );
